@@ -17,7 +17,75 @@ public class SimpleMathTest {
         Assertions.assertEquals(expected, actual,
                 () -> firstNumber + "+" + secondNumber +
                     " did not produce " + expected + "!");
-        Assertions.assertNotEquals(9.2, actual);
-        Assertions.assertNotNull(actual);
     }
+
+    @Test
+    void testSubtraction() {
+        SimpleMath math = new SimpleMath();
+        double firstNumber = 8D;
+        double secondNumber = 2D;
+
+        Double actual = math.subtraction(firstNumber, secondNumber);
+        double expected = 6D;
+
+        Assertions.assertEquals(expected, actual,
+                () -> firstNumber + "-" + secondNumber +
+                    " did not produce " + expected + "!");
+    }
+
+    @Test
+    void testMultiplication() {
+        SimpleMath math = new SimpleMath();
+        double firstNumber = 5D;
+        double secondNumber = 5D;
+
+        Double actual = math.multiplication(firstNumber, secondNumber);
+        double expected = 25D;
+
+        Assertions.assertEquals(expected, actual,
+                () -> firstNumber + "*" + secondNumber +
+                    " did not produce " + expected + "!");
+    }
+
+    @Test
+    void testDivision() {
+        SimpleMath math = new SimpleMath();
+        double firstNumber = 10D;
+        double secondNumber = 2D;
+
+        double actual = math.division(firstNumber, secondNumber);
+        double expected = 5D;
+
+        Assertions.assertEquals(expected, actual,
+                () -> firstNumber + "/" + secondNumber +
+                    " did not produce " + expected + "!");
+    }
+
+    @Test
+    void testMean() {
+        SimpleMath math = new SimpleMath();
+        double firstNumber = 10D;
+        double secondNumber = 10D;
+
+        double actual = math.mean(firstNumber, secondNumber);
+        double expected = 10D;
+
+        Assertions.assertEquals(expected, actual,
+                () -> "(" + firstNumber + "+" + secondNumber + ")/2" +
+                    " did not produce " + expected + "!");
+    }
+
+    @Test
+    void testSquareRoot() {
+        SimpleMath math = new SimpleMath();
+        double number = 81D;
+
+        double actual = math.squareRoot(number);
+        double expected = 9D;
+
+        Assertions.assertEquals(expected, actual,
+                () -> "Square root of " + number +
+                    " did not produce " + expected + "!");
+    }
+
 }
