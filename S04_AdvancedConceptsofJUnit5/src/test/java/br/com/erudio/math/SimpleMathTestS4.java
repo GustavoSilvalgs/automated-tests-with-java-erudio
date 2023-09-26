@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("Test Math Operations in SimpleMath Class")
 public class SimpleMathTestS4 {
@@ -17,9 +18,11 @@ public class SimpleMathTestS4 {
         math = new SimpleMath();
     }
 
-    @AfterEach
-    void afterEachMethod() {
-        System.out.println("Running @AfterEach method!");
+    @ParameterizedTest
+    @ValueSource(strings = {"Pelé", "Senna","Keith Moon"})
+    void testValueSource(String firstName) {
+        System.out.println(firstName);
+        Assertions.assertNotNull(firstName);
     }
 
     @DisplayName("Test double subtraction [firstNumber, secondNumber, expected]")
