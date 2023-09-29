@@ -10,7 +10,7 @@ public class PersonService implements IPersonService {
     public Person createPerson(Person person) {
 
         if (person.getEmail() == null || person.getEmail().isBlank())
-            throw new IllegalArgumentException("The Person e-mail is null or empty");
+            throw new IllegalArgumentException("The Person e-mail is null or empty!");
 
         var id = new AtomicLong().incrementAndGet();
         person.setId(id);
