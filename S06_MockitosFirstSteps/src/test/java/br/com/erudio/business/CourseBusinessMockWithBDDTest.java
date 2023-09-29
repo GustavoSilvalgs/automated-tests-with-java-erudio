@@ -4,6 +4,7 @@ import br.com.erudio.service.CourseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,7 +59,7 @@ public class CourseBusinessMockWithBDDTest {
     // test[System Under Test]_[Condition or State Change]_[Expected Result]
     @DisplayName("Delete Courses not Related to Spring Using Mockito should call method deleteCourse")
     @Test
-    void DeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethodDeleteCourse() {
+    void DeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethod_DeleteCourse() {
         // Given / Arrange
         given(mockService.retrieveCourses("Gustavo"))
                 .willReturn(courses);
@@ -83,22 +84,43 @@ public class CourseBusinessMockWithBDDTest {
     // test[System Under Test]_[Condition or State Change]_[Expected Result]
     @DisplayName("Delete Courses not Related to Spring Using Mockito should call method deleteCourse V2")
     @Test
-    void DeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethodDeleteCourseV2() {
+    void DeleteCoursesNotRelatedToSpring_UsingMockitoVerify_Should_CallMethod_DeleteCourseV2() {
         // Given / Arrange
         given(mockService.retrieveCourses("Gustavo"))
                 .willReturn(courses);
 
+        String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+        String architectureCourse = "Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#";
+        String restSpringCourse = "REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker";
+
         // When / Act
         business.deleteCoursesNotRelatedToSpring("Gustavo");
 
-        then(mockService)
-            .should()
-                .deleteCourse("Agile Desmistificado com Scrum, XP, Kanban e Trello");
-        then(mockService)
-            .should()
-                .deleteCourse("Arquitetura de Microsserviços do 0 com ASP.NET, .NET 6 e C#");
-        then(mockService)
-            .should(never())
-                .deleteCourse("REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker");
+        then(mockService).should().deleteCourse(agileCourse);
+        then(mockService).should().deleteCourse(architectureCourse);
+        then(mockService).should(never()).deleteCourse(restSpringCourse);
+    }
+
+    @DisplayName("Delete Courses not Related to Spring Capturing Arguments should call method deleteCourse V2")
+    @Test
+    void DeleteCoursesNotRelatedToSpring_CapturingArguments_Should_CallMethod_DeleteCourseV2() {
+        // Given / Arrange
+        /*courses = Arrays.asList(
+                "Agile Desmistificado com Scrum, XP, Kanban e Trello",
+                "REST API's RESTFul do 0 à AWS com Spring Boot 3 Java e Docker"
+        );*/
+
+        given(mockService.retrieveCourses("Gustavo"))
+                .willReturn(courses);
+
+        ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+
+        //String agileCourse = "Agile Desmistificado com Scrum, XP, Kanban e Trello";
+
+        // When / Act
+        business.deleteCoursesNotRelatedToSpring("Gustavo");
+
+        then(mockService).should(times(7)).deleteCourse(argumentCaptor.capture());
+        assertThat(argumentCaptor.getAllValues().size(), is(7));
     }
 }
