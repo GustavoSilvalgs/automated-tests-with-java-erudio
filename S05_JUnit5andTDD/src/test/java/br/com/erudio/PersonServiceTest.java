@@ -56,4 +56,20 @@ public class PersonServiceTest {
         assertEquals(person.getGender(), actual.getGender(), () -> "The Gender is Incorrect!");
         assertEquals(person.getEmail(), actual.getEmail(), () -> "The Email is Incorrect!");
     }
+
+    @Test
+    @DisplayName("When Create a Person with null e-mail Should throw exception")
+    void testCreatePerson_WithNullEmail_ShouldThrowIllegalArgumentException() {
+
+        // Given / Arrange
+        IPersonService service = new PersonService();
+        person.setEmail(null);
+
+        // When / Act
+        // Then / Assert
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.createPerson(person),
+                () -> "Empty e-mail should have cause an IllegalArgumentException");
+    }
 }
