@@ -1,4 +1,4 @@
-package br.com.erudio;
+package br.com.erudio.business;
 
 import br.com.erudio.service.CourseService;
 
@@ -17,6 +17,9 @@ public class CourseBusiness {
 
     public List<String> retrieveCoursesRelatedToSpring(String student) {
         var filteredCourses = new ArrayList<String>();
+
+        if ("Foo Bar".equals(student)) return filteredCourses;
+
         var allCourses = service.retrieveCourses(student);
 
         for(String course : allCourses) {
