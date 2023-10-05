@@ -105,4 +105,18 @@ public class PersonServicesTest {
 		assertTrue(peopleList.isEmpty());
 		assertEquals(0, peopleList.size());
 	}
+
+	@DisplayName("JUnit test for Given PersonId When FindById When Save Person then Return Person Object")
+	@Test
+	void testGivenPersonId_WhenFindById_thenReturnPersonObject() {
+		// Given / Arrange
+		given(repository.findById(anyLong())).willReturn(Optional.of(person0));
+
+		// When / Act
+		Person savedPerson = service.findById(1L);
+
+		// Then / Assert
+		assertNotNull(savedPerson);
+		assertEquals("Gustavo", savedPerson.getFirstName());
+	}
 }
