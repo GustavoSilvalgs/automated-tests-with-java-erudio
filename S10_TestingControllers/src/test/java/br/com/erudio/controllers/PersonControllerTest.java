@@ -1,5 +1,6 @@
 package br.com.erudio.controllers;
 
+import br.com.erudio.exceptions.ResourceNotFoundException;
 import br.com.erudio.model.Person;
 import br.com.erudio.services.PersonServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -110,5 +111,19 @@ public class PersonControllerTest {
 				.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
 				.andExpect(jsonPath("$.lastName", is(person.getLastName())))
 				.andExpect(jsonPath("$.email", is(person.getEmail())));
+	}
+
+	@Test
+	@DisplayName("JUnit test for Given Invalid PersonId When FindById then Return Not Found")
+	void testGivenInvalidPersonId_WhenFindById_thenReturnNotFound() throws Exception {
+		// Given / Arrange
+		long personId = 1L;
+		given(service.findById(personId)).willThrow(ResourceNotFoundException.class);
+
+		// When / Act
+		ResultActions response = mockMvc.perform(get("/person/{id}", personId));
+
+		// Then / Assert
+		response.andExpect(status().isNotFound()).andDo(print());
 	}
 }
