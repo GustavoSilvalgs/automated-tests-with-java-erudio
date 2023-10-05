@@ -140,4 +140,19 @@ public class PersonServicesTest {
 		assertEquals("Luís", updatedPerson.getFirstName());
 		assertEquals("luis@gustavo.com", updatedPerson.getEmail());
 	}
+
+	@DisplayName("JUnit test for Given PersonId When Delete Person then Do Nothing")
+	@Test
+	void testGivenPersonId_WhenDeletePerson_thenDoNothing() {
+		// Given / Arrange
+		person0.setId(1L);
+		given(repository.findById(anyLong())).willReturn(Optional.of(person0));
+		willDoNothing().given(repository).delete(person0);
+
+		// When / Act
+		service.delete(person0.getId());
+
+		// Then / Assert
+		verify(repository, times(1)).delete(person0);
+	}
 }
