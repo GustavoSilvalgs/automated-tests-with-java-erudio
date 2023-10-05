@@ -155,4 +155,20 @@ public class PersonServicesTest {
 		// Then / Assert
 		verify(repository, times(1)).delete(person0);
 	}
+
+	@DisplayName("JUnit test for Given Non Existing Id When Delete Person then Throws Exception")
+	@Test
+	void testGivenNonExistingId_WhenDeletePerson_thenThrowsException() {
+		// Given / Arrange
+		given(repository.findById(anyLong())).willReturn(Optional.empty());
+
+		// When / Act
+		assertThrows(ResourceNotFoundException.class, () -> {
+			service.delete(5L);
+		});
+
+		// Then / Assert
+		verify(repository, never()).deleteById(anyLong());
+	}
+
 }
