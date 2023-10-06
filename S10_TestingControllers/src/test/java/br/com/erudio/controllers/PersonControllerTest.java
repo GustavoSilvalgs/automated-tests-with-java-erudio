@@ -38,12 +38,12 @@ public class PersonControllerTest {
 	@MockBean
 	private PersonServices service;
 
-	private Person person;
+	private Person updatedPerson;
 
 	@BeforeEach
 	public void setup() {
 		// Given / Arrange
-		person = new Person(
+		updatedPerson = new Person(
 				"Gustavo",
 				"Silva",
 				"gustavo@gustavo.com",
@@ -61,14 +61,14 @@ public class PersonControllerTest {
 		// When / Act
 		ResultActions response = mockMvc.perform(post("/person")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(mapper.writeValueAsString(person)));
+				.content(mapper.writeValueAsString(updatedPerson)));
 
 		// Then / Assert
 		response.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("$.lastName", is(person.getLastName())))
-				.andExpect(jsonPath("$.email", is(person.getEmail())));
+				.andExpect(jsonPath("$.firstName", is(updatedPerson.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(updatedPerson.getLastName())))
+				.andExpect(jsonPath("$.email", is(updatedPerson.getEmail())));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class PersonControllerTest {
 	void testGivenListOfPeople_WhenFindAllPeople_thenReturnPeopleList() throws Exception {
 		// Given / Arrange
 		List<Person> people = new ArrayList<>();
-		people.add(person);
+		people.add(updatedPerson);
 		people.add(new Person (
 				"Luís",
 				"Silva",
@@ -100,7 +100,7 @@ public class PersonControllerTest {
 	void testGivenPersonId_WhenFindById_thenReturnPersonObject() throws Exception {
 		// Given / Arrange
 		long personId = 1L;
-		given(service.findById(personId)).willReturn(person);
+		given(service.findById(personId)).willReturn(updatedPerson);
 
 		// When / Act
 		ResultActions response = mockMvc.perform(get("/person/{id}", personId));
@@ -108,9 +108,9 @@ public class PersonControllerTest {
 		// Then / Assert
 		response.andExpect(status().isOk())
 				.andDo(print())
-				.andExpect(jsonPath("$.firstName", is(person.getFirstName())))
-				.andExpect(jsonPath("$.lastName", is(person.getLastName())))
-				.andExpect(jsonPath("$.email", is(person.getEmail())));
+				.andExpect(jsonPath("$.firstName", is(updatedPerson.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(updatedPerson.getLastName())))
+				.andExpect(jsonPath("$.email", is(updatedPerson.getEmail())));
 	}
 
 	@Test
@@ -125,5 +125,34 @@ public class PersonControllerTest {
 
 		// Then / Assert
 		response.andExpect(status().isNotFound()).andDo(print());
+	}
+
+	@Test
+	@DisplayName("JUnit test for Given Update Person When Update then Return Update Person Object")
+	void testGivenUpdatePerson_WhenUpdate_thenUpdatePersonObject() throws Exception {
+		// Given / Arrange
+		long personId = 1L;
+		given(service.findById(personId)).willThrow(ResourceNotFoundException.class);
+		given(service.update(any(Person.class)))
+				.willAnswer((invocation) -> invocation.getArgument(0));
+
+		// When / Act
+		Person updatedPerson = new Person(
+				"Luís",
+				"Silva",
+				"luis@gustavo.com",
+				"Mogi das Cruzes - São Paulo - Brasil",
+				"male");
+
+		ResultActions response = mockMvc.perform(put("/person")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(mapper.writeValueAsString(updatedPerson)));
+
+		// Then / Assert
+		response.andExpect(status().isOk())
+				.andDo(print())
+				.andExpect(jsonPath("$.firstName", is(updatedPerson.getFirstName())))
+				.andExpect(jsonPath("$.lastName", is(updatedPerson.getLastName())))
+				.andExpect(jsonPath("$.email", is(updatedPerson.getEmail())));
 	}
 }
