@@ -50,6 +50,7 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 	@Order(1)
 	@DisplayName("JUnit integration Given Person Object When Create One Person Should Return A Person Object")
 	void integrationTestGiverPersonObject_When_CreateOnePerson_ShouldReturnAPersonObject() throws JsonProcessingException {
+
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
 				.body(person)
@@ -80,5 +81,45 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 		assertEquals("Mogi das Cruzes - São Paulo - Brasil", createdPerson.getAddress());
 		assertEquals("male", createdPerson.getGender());
 		assertEquals("gustavo@gustavo.com", createdPerson.getEmail());
+	}
+
+	@Test
+	@Order(2)
+	@DisplayName("JUnit integration Given Person Object When Update One Person Should Return A Updated Person Object")
+	void integrationTestGiverPersonObject_When_UpdateOnePerson_ShouldReturnAUpdatedPersonObject() throws JsonProcessingException {
+
+		person.setFirstName("Luís");
+		person.setEmail("luis@gustavo.com");
+
+		var content = given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.body(person)
+				.when()
+				.put()
+				.then()
+				.statusCode(200)
+				.extract()
+				.body()
+				.asString();
+
+		Person createdPerson = objectMapper.readValue(content, Person.class);
+
+		person = createdPerson;
+
+		assertNotNull(createdPerson);
+
+		assertNotNull(createdPerson.getId());
+		assertNotNull(createdPerson.getFirstName());
+		assertNotNull(createdPerson.getLastName());
+		assertNotNull(createdPerson.getAddress());
+		assertNotNull(createdPerson.getGender());
+		assertNotNull(createdPerson.getEmail());
+
+		assertTrue(createdPerson.getId() > 0);
+		assertEquals("Luís" ,createdPerson.getFirstName());
+		assertEquals("Silva", createdPerson.getLastName());
+		assertEquals("Mogi das Cruzes - São Paulo - Brasil", createdPerson.getAddress());
+		assertEquals("male", createdPerson.getGender());
+		assertEquals("luis@gustavo.com", createdPerson.getEmail());
 	}
 }
