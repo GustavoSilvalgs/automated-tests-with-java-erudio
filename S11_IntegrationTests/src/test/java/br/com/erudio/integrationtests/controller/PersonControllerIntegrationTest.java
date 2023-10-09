@@ -102,24 +102,58 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 				.body()
 				.asString();
 
-		Person createdPerson = objectMapper.readValue(content, Person.class);
+		Person updatedPerson = objectMapper.readValue(content, Person.class);
 
-		person = createdPerson;
+		person = updatedPerson;
 
-		assertNotNull(createdPerson);
+		assertNotNull(updatedPerson);
 
-		assertNotNull(createdPerson.getId());
-		assertNotNull(createdPerson.getFirstName());
-		assertNotNull(createdPerson.getLastName());
-		assertNotNull(createdPerson.getAddress());
-		assertNotNull(createdPerson.getGender());
-		assertNotNull(createdPerson.getEmail());
+		assertNotNull(updatedPerson.getId());
+		assertNotNull(updatedPerson.getFirstName());
+		assertNotNull(updatedPerson.getLastName());
+		assertNotNull(updatedPerson.getAddress());
+		assertNotNull(updatedPerson.getGender());
+		assertNotNull(updatedPerson.getEmail());
 
-		assertTrue(createdPerson.getId() > 0);
-		assertEquals("Luís" ,createdPerson.getFirstName());
-		assertEquals("Silva", createdPerson.getLastName());
-		assertEquals("Mogi das Cruzes - São Paulo - Brasil", createdPerson.getAddress());
-		assertEquals("male", createdPerson.getGender());
-		assertEquals("luis@gustavo.com", createdPerson.getEmail());
+		assertTrue(updatedPerson.getId() > 0);
+		assertEquals("Luís" ,updatedPerson.getFirstName());
+		assertEquals("Silva", updatedPerson.getLastName());
+		assertEquals("Mogi das Cruzes - São Paulo - Brasil", updatedPerson.getAddress());
+		assertEquals("male", updatedPerson.getGender());
+		assertEquals("luis@gustavo.com", updatedPerson.getEmail());
+	}
+
+	@Test
+	@Order(3)
+	@DisplayName("JUnit integration Given Person Object When findById Should Return A Person Object")
+	void integrationTestGiverPersonObject_When_findById_ShouldReturnAPersonObject() throws JsonProcessingException {
+
+		var content = given().spec(specification)
+				.pathParam("id", person.getId())
+				.when()
+				.get("{id}")
+				.then()
+				.statusCode(200)
+				.extract()
+				.body()
+				.asString();
+
+		Person foundPerson = objectMapper.readValue(content, Person.class);
+
+		assertNotNull(foundPerson);
+
+		assertNotNull(foundPerson.getId());
+		assertNotNull(foundPerson.getFirstName());
+		assertNotNull(foundPerson.getLastName());
+		assertNotNull(foundPerson.getAddress());
+		assertNotNull(foundPerson.getGender());
+		assertNotNull(foundPerson.getEmail());
+
+		assertTrue(foundPerson.getId() > 0);
+		assertEquals("Luís" ,foundPerson.getFirstName());
+		assertEquals("Silva", foundPerson.getLastName());
+		assertEquals("Mogi das Cruzes - São Paulo - Brasil", foundPerson.getAddress());
+		assertEquals("male", foundPerson.getGender());
+		assertEquals("luis@gustavo.com", foundPerson.getEmail());
 	}
 }
