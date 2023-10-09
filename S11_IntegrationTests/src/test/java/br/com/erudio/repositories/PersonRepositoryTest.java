@@ -26,6 +26,8 @@ public class PersonRepositoryTest extends AbstractIntegrationTest {
     @BeforeEach
     public void setup() {
         // Given / Arrange
+        repository.deleteAll();
+
         person0 = new Person(
                 "Gustavo",
                 "Silva",
