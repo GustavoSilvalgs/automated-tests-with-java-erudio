@@ -14,6 +14,9 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,7 +52,7 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	@Order(1)
 	@DisplayName("JUnit integration Given Person Object When Create One Person Should Return A Person Object")
-	void integrationTestGiverPersonObject_When_CreateOnePerson_ShouldReturnAPersonObject() throws JsonProcessingException {
+	void integrationTestGivenPersonObject_When_CreateOnePerson_ShouldReturnAPersonObject() throws JsonProcessingException {
 
 		var content = given().spec(specification)
 				.contentType(TestConfigs.CONTENT_TYPE_JSON)
@@ -86,7 +89,7 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	@Order(2)
 	@DisplayName("JUnit integration Given Person Object When Update One Person Should Return A Updated Person Object")
-	void integrationTestGiverPersonObject_When_UpdateOnePerson_ShouldReturnAUpdatedPersonObject() throws JsonProcessingException {
+	void integrationTestGivenPersonObject_When_UpdateOnePerson_ShouldReturnAUpdatedPersonObject() throws JsonProcessingException {
 
 		person.setFirstName("Luís");
 		person.setEmail("luis@gustavo.com");
@@ -126,7 +129,7 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	@Order(3)
 	@DisplayName("JUnit integration Given Person Object When findById Should Return A Person Object")
-	void integrationTestGiverPersonObject_When_findById_ShouldReturnAPersonObject() throws JsonProcessingException {
+	void integrationTestGivenPersonObject_When_findById_ShouldReturnAPersonObject() throws JsonProcessingException {
 
 		var content = given().spec(specification)
 				.pathParam("id", person.getId())
@@ -155,5 +158,73 @@ class PersonControllerIntegrationTest extends AbstractIntegrationTest {
 		assertEquals("Mogi das Cruzes - São Paulo - Brasil", foundPerson.getAddress());
 		assertEquals("male", foundPerson.getGender());
 		assertEquals("luis@gustavo.com", foundPerson.getEmail());
+	}
+
+	@Test
+	@Order(4)
+	@DisplayName("JUnit integration When findAll Should Return a People List")
+	void integrationTest_When_findAll_ShouldReturnAPeopleList() throws JsonProcessingException {
+
+		Person anotherPerson = new Person(
+				"Maria",
+				"Rita",
+				"maria@gustavo.com",
+				"Mogi das Cruzes - São Paulo - Brasil",
+				"female");
+
+		given().spec(specification)
+				.contentType(TestConfigs.CONTENT_TYPE_JSON)
+				.body(anotherPerson)
+				.when()
+				.post()
+				.then()
+				.statusCode(200);
+
+		var content = given().spec(specification)
+				.when()
+				.get()
+				.then()
+				.statusCode(200)
+				.extract()
+				.body()
+				.asString();
+
+		List<Person> people = Arrays.asList(objectMapper.readValue(content, Person[].class));
+
+		Person foundPersonOne = people.get(0);
+
+		assertNotNull(foundPersonOne);
+
+		assertNotNull(foundPersonOne.getId());
+		assertNotNull(foundPersonOne.getFirstName());
+		assertNotNull(foundPersonOne.getLastName());
+		assertNotNull(foundPersonOne.getAddress());
+		assertNotNull(foundPersonOne.getGender());
+		assertNotNull(foundPersonOne.getEmail());
+
+		assertTrue(foundPersonOne.getId() > 0);
+		assertEquals("Luís" ,foundPersonOne.getFirstName());
+		assertEquals("Silva", foundPersonOne.getLastName());
+		assertEquals("Mogi das Cruzes - São Paulo - Brasil", foundPersonOne.getAddress());
+		assertEquals("male", foundPersonOne.getGender());
+		assertEquals("luis@gustavo.com", foundPersonOne.getEmail());
+
+		Person foundPersonTwo = people.get(1);
+
+		assertNotNull(foundPersonTwo);
+
+		assertNotNull(foundPersonTwo.getId());
+		assertNotNull(foundPersonTwo.getFirstName());
+		assertNotNull(foundPersonTwo.getLastName());
+		assertNotNull(foundPersonTwo.getAddress());
+		assertNotNull(foundPersonTwo.getGender());
+		assertNotNull(foundPersonTwo.getEmail());
+
+		assertTrue(foundPersonTwo.getId() > 0);
+		assertEquals("Maria" ,foundPersonTwo.getFirstName());
+		assertEquals("Rita", foundPersonTwo.getLastName());
+		assertEquals("Mogi das Cruzes - São Paulo - Brasil", foundPersonTwo.getAddress());
+		assertEquals("female", foundPersonTwo.getGender());
+		assertEquals("maria@gustavo.com", foundPersonTwo.getEmail());
 	}
 }
